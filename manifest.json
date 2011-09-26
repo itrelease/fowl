@@ -1,0 +1,15 @@
+{
+  "name": "fowl",
+  "version": "0.1",
+  "description": "Client for Twitter",
+  "background_page": "background.html",
+  "browser_action": {
+    "default_popup": "popup.html"
+  },
+  "options_page": "options.html",
+  "permissions": [
+    "https://api.twitter.com/",
+    "unlimitedStorage",
+    "tabs"
+  ]
+}
