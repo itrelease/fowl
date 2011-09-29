@@ -2,21 +2,26 @@ fowl = window.fowl || {};
 
 fowl.timeline = (function(){
   var Timeline = function(){
-    Object.defineProperty( this, 'data', { value: [] } );
+    Object.defineProperty( this, 'tweets', { value: [] } );
   };
   
-  Timeline.prototype.init = function( opt_data ){
-    this.data = opt_data || [];
+  Timeline.prototype.init = function( opt_tweets ){
+    this.tweets = opt_tweets || [];
   };
   
   Timeline.prototype.onUpdateHandler = function( status, response ){
-    
+    if( status ){
+      // response.json — new tweets
+    }
   };
   
   var HomeTimeline = function(){
     Timeline.apply( this, arguments );
   };
-  fowl.inherit( HomeTimeline, Timeline );
+  Object.defineProperty( HomeTimeline, 'super', {
+    value: Timeline.prototype
+  } );
+  HomeTimeline.prototype = Object.create( Timeline.prototype );
   
   HomeTimeline.prototype.onUpdateHandler = function( status, response ){
     HomeTimeline.super.onUpdateHandler.apply( this, arguments );

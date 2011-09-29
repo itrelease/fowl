@@ -10,25 +10,23 @@
   <script src="/javascripts/twitter/init.js"></script>
   <script src="/javascripts/twitter/timeline.js"></script>
   <script>
-    (function(){
-      if( !fowl.storage.get('access_token_key') ){
-        // show link to options page where user can authorize
-        return;
-      }
-      
-      var params = {
-        consumerKey: fowl.storage.get('consumer_key'),
-        consumerSecret: fowl.storage.get('consumer_secret'),
-        accessTokenKey: fowl.storage.get('access_token_key'),
-        accessTokenSecret: fowl.storage.get('access_token_secret')
-      };
-      
-      T.init(params, function(){
-        T.pubsub.subscribe(T.timeline.EventType.HOME, function( status, response ){
-          
-        });
-      });
-    })();
+    // (function(){
+    //   if( !fowl.storage.get('access_token_key') ){
+    //     // show link to options page where user can authorize
+    //     return;
+    //   }
+    //   
+    //   var params = {
+    //     consumerKey: fowl.storage.get('consumer_key'),
+    //     consumerSecret: fowl.storage.get('consumer_secret'),
+    //     accessTokenKey: fowl.storage.get('access_token_key'),
+    //     accessTokenSecret: fowl.storage.get('access_token_secret')
+    //   };
+    //   
+    //   T.init(params, function(){
+    //     fowl.init();
+    //   });
+    // })();
   </script>
 </body>
 </html>
