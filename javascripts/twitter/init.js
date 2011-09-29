@@ -40,7 +40,7 @@ T.request = function( url, method, params, callback ){
   
   if( params ){
     for( var key in params ){
-      if( params.hasOwnProperty( key ) ){
+      if( params.hasOwnProperty( key ) && params[key] ){
         queryString.push( key + '=' + params[key] );
       }
     }
@@ -53,15 +53,15 @@ T.request = function( url, method, params, callback ){
     url += '?' + queryString;
   }
   
-  T.oauth[method]( url, T.request.successHandler, T.request.errorHandler );
+  T.oauth[method]( url, T.request.successHandler.bind(null, callback), T.request.errorHandler.bind(null, callback) );
 };
 
-T.request.successHandler = function( response ){
+T.request.successHandler = function( callback, response ){
   response.json = JSON.parse( response.text );
   callback( true, response );
 };
 
-T.request.errorHandler = function( response ){
+T.request.errorHandler = function( callback, response ){
   response.error = JSON.parse( response.text );
   callback( false, response );
 };

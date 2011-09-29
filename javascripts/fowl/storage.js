@@ -10,7 +10,7 @@ fowl.storage = (function(){
   function set( key, value ){
     storage[key] = value;
     localStorage.removeItem('fowl');
-    JSON.stringify( localStorage.setItem('fowl', storage) );
+    localStorage.setItem('fowl', JSON.stringify( storage ) );
   }
   
   function remove( key ){
