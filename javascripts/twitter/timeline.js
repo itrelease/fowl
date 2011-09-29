@@ -1,5 +1,5 @@
 window.T = window.T || {};
-T.timeline = (function( window, document, undefined ){
+T.timeline = (function(){
   var HOME_TIMELINE_URL = 'https://api.twitter.com/1/statuses/home_timeline.json',
       MENTIONS_TIMELINE_URL = 'https://api.twitter.com/1/statuses/mentions.json';
   
@@ -27,4 +27,4 @@ T.timeline = (function( window, document, undefined ){
     mentions: mentionsTimeline,
     EventType: EventType
   };
-})( window, window.document );
+})();

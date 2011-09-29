@@ -1,3 +1,7 @@
+// init
+// timeline
+// tweet
+
 window.T = window.T || {};
 
 T.pubsub = {};
@@ -26,6 +30,8 @@ T.init = function( params, callback ){
   Object.defineProperties(T.pubsub, {
     subscriptions: { get: function(){ return subscriptions; } }
   });
+  
+  callback();
 };
 
 T.request = function( url, method, params, callback ){

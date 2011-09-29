@@ -1,7 +1,7 @@
 window.T = window.T || {};
-T.tweet = (function( window, document, undefined ){
-  var DESTROY_TWEET_URL = '',
-      RETWEET_TWEET_URL = '';
+T.tweet = (function(){
+  var DESTROY_TWEET_URL = 'http://api.twitter.com/1/statuses/destroy/:id.json',
+      RETWEET_TWEET_URL = 'http://api.twitter.com/1/statuses/retweet/:id.json';
   
   var EventType = {
     DESTROY: 'onTweetDestroy',
@@ -9,14 +9,14 @@ T.tweet = (function( window, document, undefined ){
   };
   
   function destroyTweet( params ){
-    T.request(DESTROY_TWEET_URL, 'POST', params || null, function( status, response ){
+    T.request(DESTROY_TWEET_URL.replace(':id', params.id), 'POST', params || null, function( status, response ){
       console.log('T.tweet.destroy', status, response);
       T.pubsub.publish( EventType.DESTROY, status, response );
     });
   }
   
   function retweetTweet( params ){
-    T.request(RETWEET_TWEET_URL, 'POST', params || null, function( status, response ){
+    T.request(RETWEET_TWEET_URL.replace(':id', params.id), 'POST', params || null, function( status, response ){
       console.log('T.tweet.retweet', status, response);
       T.pubsub.publish( EventType.RETWEET, status, response );
     });
@@ -26,4 +26,4 @@ T.tweet = (function( window, document, undefined ){
     destroy: null,
     retweet: null
   };
-})( window, window.document );
+})();
