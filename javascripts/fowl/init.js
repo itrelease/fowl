@@ -26,12 +26,14 @@ fowl.init = function(){
       since_id: sinceId['home'],
       include_entities: true
     });
-    // 
-    // setInterval(function(){
-    //   T.timeline.home({
-    //     since_id: fowl.storage.get( 'since_id' )['home'],
-    //     include_entities: true
-    //   });
-    // }, 60 * 1000);
+    
+    setInterval(function(){
+      var sinceId = fowl.storage.get( 'since_id' ) || {};
+      
+      T.timeline.home({
+        since_id: sinceId['home'],
+        include_entities: true
+      });
+    }, 60 * 1000);
   })();
 };

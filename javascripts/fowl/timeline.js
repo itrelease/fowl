@@ -48,7 +48,10 @@ fowl.timeline = (function(){
       fowl.storage.set( 'since_id', localSinceId );
       
       response.json.forEach( function( tweet ){
+        console.group('TWEET');
+        console.log('raw', tweet);
         console.log( fowl.getMsg(' {$username}: {$text} ', { username: tweet.user.name, text: tweet.text }) );
+        console.groupEnd('TWEET');
       } );
     }
   };
