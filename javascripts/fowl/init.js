@@ -15,11 +15,13 @@ fowl.inherit = (function( C, P ){
 })();
 
 fowl.init = function(){
-  T.subscribe( T.timeline.EventType.HOME, fowl.timeline.home.onUpdateHandler );
+  T.pubsub.subscribe( T.timeline.EventType.HOME, fowl.timeline.home.onUpdateHandler, fowl.timeline.home );
   
   (function(){
-    setInterval(function(){
+    T.timeline.home();
     
+    setInterval(function(){
+      T.timeline.home();
     }, 60 * 1000);
   })();
 };
