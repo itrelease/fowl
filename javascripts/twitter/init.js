@@ -5,11 +5,8 @@
 
 window.T = window.T || {};
 
-T.pubsub = {};
-
 T.init = function( params, callback ){
-  var subscriptions = {},
-      oauth;
+  var oauth;
   
   oauth = new OAuth({
     consumerKey: params.consumerKey,
@@ -26,10 +23,6 @@ T.init = function( params, callback ){
     accessTokenSecret: { get: function(){ return params.accessTokenSecret; } },
     
     oauth: { get: function(){ return oauth; } }
-  });
-  
-  Object.defineProperties(T.pubsub, {
-    subscriptions: { get: function(){ return subscriptions; } }
   });
   
   callback();
@@ -64,41 +57,6 @@ T.request.successHandler = function( callback, response ){
 T.request.errorHandler = function( callback, response ){
   response.error = JSON.parse( response.text );
   callback( false, response );
-};
-
-T.pubsub.subscribe = function( topic, fn, opt_context ){
-  var subscriptions = T.pubsub.subscriptions[topic];
-  
-  if( !subscriptions ){
-    subscriptions = T.pubsub.subscriptions[topic] = [];
-  }
-  
-  subscriptions.push({
-    fn: fn,
-    context: opt_context
-  });
-};
-
-T.pubsub.unsubscribe = function( topic, fn ){
-  var subscriptions = T.pubsub.subscriptions[topic] || [];
-  
-  for( var i=0, l=subscriptions.length; i<l; i++ ){
-    if( subscriptions[i].fn == fn ){
-      subscriptions.splice( i, 1 );
-      break;
-    }
-  }
-};
-
-T.pubsub.publish = function( topic ){
-  var args = Array.prototype.slice.call( arguments, 1 ),
-      subscriptions = T.pubsub.subscriptions[topic] || [],
-      subscription;
-  
-  for( var i=0, l=subscriptions.length; i<l; i++ ){
-    subscription = subscriptions[i];
-    subscription.fn.apply( subscription.context, args );
-  }
 };
 
 

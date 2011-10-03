@@ -1,6 +1,11 @@
 fowl = window.fowl || {};
 
 fowl.timeline = (function(){
+  var EventType = {
+    HOME: 'onHomeTimelineUpdate',
+    MENTIONS: 'onMentionTimelineUpdate'
+  };
+  
   var Timeline = function(){
     Object.defineProperties( this, {
       'tweets': {
@@ -56,22 +61,18 @@ fowl.timeline = (function(){
       count: 200,
       since_id: sinceId['home'],
       include_entities: true
-    });
+    }, this.onUpdateHandler.bind( this ));
   };
   
   HomeTimeline.prototype.onUpdateHandler = function( status, response ){
     HomeTimeline.super.onUpdateHandler.apply( this, arguments );
     if( status && response.json.length ){
-      response.json.forEach( function( tweet ){
-        console.group('TWEET');
-        console.log('raw', tweet);
-        console.log( fowl.getMsg(' {$username}: {$text} ', { username: tweet.user.name, text: tweet.text }) );
-        console.groupEnd('TWEET');
-      } );
+      fowl.pubsub.publish( EventType.HOME, status, response );
     }
   };
   
   return {
-    home: new HomeTimeline()
+    home: new HomeTimeline(),
+    EventType: EventType
   };
 })();
