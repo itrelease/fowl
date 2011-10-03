@@ -25,15 +25,14 @@ fowl.timeline = (function(){
       
       if( tweets.length && this.tweets.length ){
         var d1 = +new Date( tweets[tweets.length - 1]['created_at'] ),
-            d2 = +new Date( this.tweets[0] );
-        console.log(d1 > d2 ? 'new' : 'old');
-        this.tweets = d1 > d2 ? tweets.concat( this.tweets ) : this.tweets.concat( tweets );
+            d2 = +new Date( this.tweets[0]['created_at'] );
+        
+        this.tweets = d1 > d2 ? tweets.concat( this.tweets ) : this.tweets.concat( tweets.slice(1) );
       }
       else{
         this.tweets = tweets.concat( this.tweets );
       }
       
-      // this.tweets = tweets.concat( this.tweets );
       this.sinceId = this.tweets[0] ? this.tweets[0]['id_str'] : this.sinceId;
       
       if( this.type ){
@@ -63,6 +62,14 @@ fowl.timeline = (function(){
     T.timeline.home({
       count: 200,
       since_id: sinceId['home'],
+      include_entities: true
+    }, this.onUpdateHandler.bind( this ));
+  };
+  
+  HomeTimeline.prototype.fetchWithMaxId = function( maxId ){
+    T.timeline.home({
+      count: 200,
+      max_id: maxId,
       include_entities: true
     }, this.onUpdateHandler.bind( this ));
   };
