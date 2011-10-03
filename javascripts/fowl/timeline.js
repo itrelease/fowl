@@ -7,27 +7,33 @@ fowl.timeline = (function(){
   };
   
   var Timeline = function(){
-    Object.defineProperties( this, {
-      'tweets': {
-        value: [],
-        writable: true
-      },
-      'sinceId': {
-        value: null,
-        writable: true
-      }
-    } );
+    Object.defineProperties(this, {
+      type: { value: 'home' },
+      tweets: { value: [], writable: true },
+      sinceId: { value: null, writable: true }
+    });
   };
   
   Timeline.prototype.init = function( opt_tweets ){
-    this.tweets = opt_tweets || [];
-    this.sinceId = this.tweets[0] ? this.tweets[0]['id_str'] : 0;
+    this.tweets = opt_tweets || this.tweets;
+    this.sinceId = this.tweets[0] ? this.tweets[0] : this.sinceId;
   };
   
   Timeline.prototype.onUpdateHandler = function( status, response ){
     if( status ){
       var tweets = Array.isArray( response.json ) ? response.json.slice(0) : [];
-      this.tweets = tweets.concat( this.tweets );
+      
+      if( tweets.length && this.tweets.length ){
+        var d1 = +new Date( tweets[tweets.length - 1]['created_at'] ),
+            d2 = +new Date( this.tweets[0] );
+        console.log(d1 > d2 ? 'new' : 'old');
+        this.tweets = d1 > d2 ? tweets.concat( this.tweets ) : this.tweets.concat( tweets );
+      }
+      else{
+        this.tweets = tweets.concat( this.tweets );
+      }
+      
+      // this.tweets = tweets.concat( this.tweets );
       this.sinceId = this.tweets[0] ? this.tweets[0]['id_str'] : this.sinceId;
       
       if( this.type ){
@@ -44,9 +50,6 @@ fowl.timeline = (function(){
   };
   
   var HomeTimeline = function(){
-    Object.defineProperty(this, 'type', {
-      value: 'home'
-    });
     Timeline.apply( this, arguments );
   };
   Object.defineProperty( HomeTimeline, 'super', {

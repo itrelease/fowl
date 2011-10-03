@@ -5,8 +5,6 @@
 
 fowl = window.fowl || {};
 
-fowl.pubsub = {};
-
 fowl.getMsg = function( str, opt_values ){
   var values = opt_values || {};
   for (var key in values) {

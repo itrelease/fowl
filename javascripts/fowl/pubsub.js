@@ -3,10 +3,6 @@ fowl = window.fowl || {};
 fowl.pubsub = (function(){
   var subscriptions = {};
   
-  Object.defineProperties(fowl.pubsub, {
-    subscriptions: { get: function(){ return subscriptions; } }
-  });
-  
   function subscribe( topic, fn, opt_context ){
     if( !subscriptions[topic] ){
       subscriptions[topic] = [];
