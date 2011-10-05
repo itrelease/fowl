@@ -8,7 +8,6 @@ fowl.timeline = (function(){
   
   var Timeline = function(){
     Object.defineProperties(this, {
-      type: { value: 'home' },
       tweets: { value: [], writable: true },
       sinceId: { value: null, writable: true }
     });
@@ -50,6 +49,9 @@ fowl.timeline = (function(){
   
   var HomeTimeline = function(){
     Timeline.apply( this, arguments );
+    Object.defineProperty( this, 'type', {
+      value: 'home'
+    } );
   };
   Object.defineProperty( HomeTimeline, 'super', {
     value: Timeline.prototype
