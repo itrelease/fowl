@@ -16,6 +16,9 @@ fowl.timeline = (function(){
   Timeline.prototype.init = function( opt_tweets ){
     this.tweets = opt_tweets || this.tweets;
     this.sinceId = this.tweets[0] ? this.tweets[0] : this.sinceId;
+    if( opt_tweets ){
+      fowl.pubsub.publish( EventType.HOME, true, this.tweets );
+    }
   };
   
   Timeline.prototype.onUpdateHandler = function( status, response ){
@@ -79,7 +82,7 @@ fowl.timeline = (function(){
   HomeTimeline.prototype.onUpdateHandler = function( status, response ){
     HomeTimeline.super.onUpdateHandler.apply( this, arguments );
     if( status && response.json.length ){
-      fowl.pubsub.publish( EventType.HOME, status, response );
+      fowl.pubsub.publish( EventType.HOME, status, this.tweets );
     }
   };
   

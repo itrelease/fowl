@@ -3,8 +3,63 @@
 <head>
   <meta charset="UTF-8">
   <title></title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
 </head>
-<body>
+<body style="width: 340px; height: 462px;">
+  <div id="chromeExtension">
+		<header>
+			<h1 id="screenName">khmelev</h1>
+			<nav>
+				<ul id="topMenu">
+					<li><a href="" id="tweets">&nbsp;</a></li>
+				</ul>
+			</nav>
+		</header>
+		<div id="slideWrapper">
+			<div id="slide">
+				<div class="slide slideScroll">
+					<ul class="list" id="tweetsList">
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<!--
+	<div style="
+      position: absolute;
+      width: 0px;
+      height: 0px;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 10px solid white;
+      top: 0;
+      z-index: 2;
+  "></div>
+  <div style="
+      position: absolute;
+      width: 0px;
+      height: 0px;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 10px solid red;
+      top: 1px;
+  "></div>
+  <div style="
+      position: absolute;
+      width: 0px;
+      height: 0px;
+      border-left: 10px solid transparent;
+      border-right: 10px solid transparent;
+      border-top: 10px solid red;
+      top: 6px;
+      opacity: 0.2;
+  "></div>
+	-->
+	
+	<script src="/javascripts/3dparty/js_humanized_time_span/humanized_time_span.js"></script>
+	<script src="/javascripts/3dparty/js-date-format/date-format.js"></script>
+
   <script src="/javascripts/3dparty/jsOAuth-1.3.1/jsOAuth.min.js"></script>
   <script src="/javascripts/twitter/init.js"></script>
   <script src="/javascripts/twitter/timeline.js"></script>
@@ -27,7 +82,9 @@
         };
         
         T.init(params, function(){
-          fowl.init();
+          setTimeout(function(){
+            fowl.init();
+          }, 0);
         });
       }
     })();

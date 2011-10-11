@@ -1,8 +1,3 @@
-// storage
-// pubsub
-// timeline
-// init
-
 fowl = window.fowl || {};
 
 fowl.getMsg = function( str, opt_values ){
@@ -14,14 +9,57 @@ fowl.getMsg = function( str, opt_values ){
   return str;
 };
 
-fowl.init = function(){  
+fowl.parse = function( tweet ){
+  // parse urls
+  tweet = tweet.replace(/[A-Za-z]+:\/\/[A-Za-z0-9-_]+\.[A-Za-z0-9-_:%&~\?\/.=]+/g, function(url) {
+  	return url.link(url);
+  });
+  
+  // parse usernames
+  tweet = tweet.replace(/[@]+[A-Za-z0-9-_]+/g, function(u) {
+  	var username = u.replace("@","");
+  	return u.link('http://twitter.com/' + username);
+  });
+  
+  // parse hashtags
+  tweet = tweet.replace(/[#]+[A-Za-z0-9-_]+/g, function(t) {
+  	var tag = t.replace('#', '%23');
+  	return t.link('http://search.twitter.com/search?q=' + tag);
+  });
+
+  return tweet;
+};
+
+fowl.init = function(){
   fowl.pubsub.subscribe(fowl.timeline.EventType.HOME, function( status, response ){
-    response.json.forEach( function( tweet ){
-      console.group('TWEET');
-      console.log('raw', tweet);
-      console.log( fowl.getMsg(' {$username}: {$text} ', { username: tweet.user.name, text: tweet.text }) );
-      console.groupEnd('TWEET');
+    var tweetTpl = '<span class="nickname">{$username}</span>';
+        tweetTpl += '<time datetime="{$datetime}">{$time}</time>';
+        tweetTpl += '<p>{$text}</p>';
+    
+    var documentFragment = document.createDocumentFragment();
+    
+    response.forEach( function( tweet ){
+      var date = new Date( tweet.created_at );
+      
+      var data = {
+        username: tweet.user.screen_name,
+        datetime: date.toFormattedString('yyyy-MM-dd HH:mm:ss'),
+        time: humanized_time_span( date ),
+        text: fowl.parse( tweet.text )
+      };
+      
+      var li = document.createElement( 'li' );
+      li.id = tweet.id_str;
+      li.innerHTML = fowl.getMsg( tweetTpl, data );
+      
+      documentFragment.appendChild( li );
     } );
+    
+    var homeTimeline = document.getElementById('tweetsList'),
+        slide = homeTimeline.parentNode;
+    
+    homeTimeline.innerHTML = '';
+    homeTimeline.appendChild( documentFragment );
   });
   
   var timeline = fowl.storage.get('timeline') || {};
