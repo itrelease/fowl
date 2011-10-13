@@ -2,61 +2,115 @@
 <html lang="ru-RU">
 <head>
   <meta charset="UTF-8">
-  <title></title>
   <link rel="stylesheet" href="/stylesheets/style.css">
 </head>
 <body style="width: 340px; height: 462px;">
-  <div id="chromeExtension">
-		<header>
-			<h1 id="screenName">khmelev</h1>
+  <div id="main">
+    <header>
+      <h1 id="screen_name">khmelev</h1>
 			<nav>
-				<ul id="topMenu">
-					<li><a href="" id="tweets">&nbsp;</a></li>
+				<ul id="top_menu">
+					<li class="selected"><span id="home_timeline_icon"></span></li>
+					<li><span id="mentions_timeline_icon"></span></li>
+					<li><span id="dm_timeline_icon"></span></li>
+					<li><span id="search_timeline_icon"></span></li>
 				</ul>
 			</nav>
-		</header>
-		<div id="slideWrapper">
-			<div id="slide">
-				<div class="slide slideScroll">
-					<ul class="list" id="tweetsList"></ul>
-				</div>
-			</div>
-		</div>
-	</div>
-	
-	<!--
-	<div style="
-      position: absolute;
-      width: 0px;
-      height: 0px;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      border-top: 10px solid white;
-      top: 0;
-      z-index: 2;
-  "></div>
-  <div style="
-      position: absolute;
-      width: 0px;
-      height: 0px;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      border-top: 10px solid red;
-      top: 1px;
-  "></div>
-  <div style="
-      position: absolute;
-      width: 0px;
-      height: 0px;
-      border-left: 10px solid transparent;
-      border-right: 10px solid transparent;
-      border-top: 10px solid red;
-      top: 6px;
-      opacity: 0.2;
-  "></div>
-	-->
-	
-	<script src="/javascripts/3dparty/js_humanized_time_span/humanized_time_span.js"></script>
+    </header>
+    <div class="shadow"></div>
+    <div class="arrow">
+      <div class="arrow_transparent"></div>
+      <div class="arrow_border"></div>
+      <div class="arrow_shadow"></div>
+    </div>
+    
+    <div id="timeline">
+      <div id="home" class="slide">
+        <ul>
+          <li>
+            <div>
+              <span class="nickname">DmitrySoshnikov</span>
+              <time datetime="{$datetime}">26 minutes ago</time>
+              <p>Constantly forgot to put semicolon garbage at the end of a statement while playing with #Dart.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <span class="nickname">alxgsv</span>
+              <time datetime="{$datetime}">33 minutes ago</time>
+              <p>@knopkodav @bzhmurov а учитывая, что каждую дверь надо открывать/закрывать отдельно, Борис на сегодня получает прозвище Водяной!</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <span class="nickname">stepanvr</span>
+              <time datetime="{$datetime}">56 minutes ago</time>
+              <p>Ура! Друзья на НГ приедут! Сначала одни, потом еще, третьи думают. Хорошо, что мы в Австралию не уехали - хрен бы кто приехал в гости :)</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <span class="nickname">genue</span>
+              <time datetime="{$datetime}">1 hour ago</time>
+              <p>Обычно Фадея не цитирую, но отныне он представляется только так: 
+              — Я черветряпа
+              — Кто? Черепаха?
+              — Чер-ве-тря-па. Червяк-тряпка.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <span class="nickname">alxgsv</span>
+              <time datetime="{$datetime}">1 hour ago</time>
+              <p>Входит — и не выходит! Замечательно не выходит! (PayPal для русских)</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <span class="nickname">kost</span>
+              <time datetime="{$datetime}">9 hours ago</time>
+              <p>Все приложения можно восстановить из App Store. Настройки сохранились. А часть можно и выкинуть.</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <span class="nickname">kost</span>
+              <time datetime="{$datetime}">10 hours ago</time>
+              <p>Обновил iPad до iOS 5 — попали все приложения. Я лох?</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+      
+      <div id="mentions" class="slide" style="position: absolute; top: 0; left: 340px;">
+        <ul>
+          <li>
+            <div>
+              <span class="nickname">alxgsv</span>
+              <time datetime="{$datetime}">1 day ago</time>
+              <p>Россия мокренькая</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <span class="nickname">alxgsv</span>
+              <time datetime="{$datetime}">1 day ago</time>
+              <p>Россия мокренькая</p>
+            </div>
+          </li>
+          <li>
+            <div>
+              <span class="nickname">stepanvr</span>
+              <time datetime="{$datetime}">1 day ago</time>
+              <p>Ура! Друзья на НГ приедут! Сначала одни, потом еще, третьи думают. Хорошо, что мы в Австралию не уехали - хрен бы кто приехал в гости :)</p>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  
+  <script src="/javascripts/3dparty/js_humanized_time_span/humanized_time_span.js"></script>
 	<script src="/javascripts/3dparty/js-date-format/date-format.js"></script>
 
   <script src="/javascripts/3dparty/jsOAuth-1.3.1/jsOAuth.min.js"></script>
@@ -67,6 +121,67 @@
   <script src="/javascripts/fowl/pubsub.js"></script>
   <script src="/javascripts/fowl/timeline.js"></script>
   <script src="/javascripts/fowl/init.js"></script>
+  <script>
+    (function( window, document, undefined ){
+      var homeTimelineMenu, mentionsTimelineMenu,
+          homeTimelineList, mentionsTimelineList,
+          onSelectItem, onScrollHandler,
+          shadow, arrow, arrowShadow;
+      
+      homeTimelineMenu = document.querySelector('#home_timeline_icon').parentNode;
+      mentionsTimelineMenu = document.querySelector('#mentions_timeline_icon').parentNode;
+      
+      homeTimelineList = document.getElementById('home');
+      mentionsTimelineList = document.getElementById('mentions');
+      
+      shadow = document.querySelector('.shadow');
+      arrow = document.querySelector('.arrow');
+      arrowShadow = document.querySelector('.arrow_shadow');
+      
+      onSelectItem = function( event ){
+        var target = event.target.parentNode,
+            selected = document.querySelector('.selected'),
+            timeline = document.getElementById('timeline');
+        
+        var arrowValues = [ 85, 110, 135, 164 ];
+        
+        if( target == selected ){
+          return;
+        }
+        
+        var listItems = Array.prototype.slice.call(target.parentNode.children, 0),
+            targetIndex = listItems.indexOf( target ),
+            selectedIndex = listItems.indexOf( selected );
+        
+        var marginOffset = targetIndex * 340;
+        
+        selected.classList.remove('selected');
+        target.classList.add('selected');
+        
+        timeline.style.marginLeft = -marginOffset + 'px';
+        arrow.style.left = arrowValues[ targetIndex ] + 'px';
+      };
+      
+      onScrollHandler = function( event ){
+        if( event.target.scrollTop > 0 ){
+          shadow.style.display = 'block';
+          arrowShadow.style.display = 'block';
+        }
+        
+        else{
+          shadow.style.display = 'none';
+          arrowShadow.style.display = 'none';
+        }
+      };
+      
+      homeTimelineMenu.addEventListener( 'click', onSelectItem, false );
+      mentionsTimelineMenu.addEventListener( 'click', onSelectItem, false );
+      
+      homeTimelineList.addEventListener( 'scroll', onScrollHandler, false );
+      mentionsTimelineList.addEventListener( 'scroll', onScrollHandler, false );
+    })( window, window.document );
+  </script>
+  <!--
   <script>
     (function(){
       if( !fowl.storage.get('access_token_key') ){
@@ -88,5 +203,6 @@
       }
     })();
   </script>
+  -->
 </body>
 </html>
