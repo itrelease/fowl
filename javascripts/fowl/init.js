@@ -31,14 +31,14 @@ fowl.parse = function( tweet ){
 };
 
 fowl.init = function(){
-  fowl.pubsub.subscribe(fowl.timeline.EventType.HOME, function( status, response ){
+  fowl.pubsub.subscribe(fowl.timeline.EventType.HOME, function( status, tweets ){
     var tweetTpl = '<span class="nickname">{$username}</span>';
         tweetTpl += '<time datetime="{$datetime}">{$time}</time>';
         tweetTpl += '<p>{$text}</p>';
     
     var documentFragment = document.createDocumentFragment();
     
-    response.forEach( function( tweet ){
+    tweets.forEach( function( tweet ){
       var date = new Date( tweet.created_at );
       
       var data = {
@@ -58,8 +58,7 @@ fowl.init = function(){
     var homeTimeline = document.getElementById('tweetsList'),
         slide = homeTimeline.parentNode;
     
-    homeTimeline.innerHTML = '';
-    homeTimeline.appendChild( documentFragment );
+    
   });
   
   var timeline = fowl.storage.get('timeline') || {};

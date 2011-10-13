@@ -82,7 +82,7 @@ fowl.timeline = (function(){
   HomeTimeline.prototype.onUpdateHandler = function( status, response ){
     HomeTimeline.super.onUpdateHandler.apply( this, arguments );
     if( status && response.json.length ){
-      fowl.pubsub.publish( EventType.HOME, status, this.tweets );
+      fowl.pubsub.publish( EventType.HOME, status, response.json );
     }
   };
   
