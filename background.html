@@ -1,5 +1,95 @@
 <html>
 <head>
+  <script src="/javascripts/3dparty/jsOAuth-1.3.1/jsOAuth.min.js"></script>
+  <script src="/javascripts/twitter/init.js"></script>
+  <script src="/javascripts/twitter/timeline.js"></script>
+
+  <script src="/javascripts/fowl/storage.js"></script>
+  <script src="/javascripts/fowl/pubsub.js"></script>
+  <script src="/javascripts/fowl/timeline.js"></script>
+  <script src="/javascripts/fowl/init.js"></script>
   
+  <script>
+    function storeCredentials( accessTokenKey, accessTokenSecret, consumerKey, consumerSecret ){
+      fowl.storage.set({
+        'access_token_key': accessTokenKey,
+        'access_token_secret': accessTokenSecret,
+        'consumer_key': consumerKey,
+        'consumer_secret': consumerSecret
+      });
+    }
+    
+    function getCredentials(){
+      var credentials = {};
+      credentials.accessTokenKey = fowl.storage.get('access_token_key');
+      credentials.accessTokenSecret = fowl.storage.get('access_token_secret');
+      credentials.consumerKey = fowl.storage.get('consumer_key');
+      credentials.consumerSecret = fowl.storage.get('consumer_secret');
+      return credentials;
+    }
+    
+    function init(){
+      console.log('init');
+      if( !fowl.storage.get('access_token_key') ){
+        console.log('wtf');
+        return;
+      }
+      
+      fowl.pubsub.subscribe(fowl.timeline.EventType.HOME, function( status, tweets ){
+        var popup = chrome.extension.getViews({ type: 'popup' });
+        console.info('NEW');
+        tweets.forEach(function( tweet ){
+          console.group('TWEET');
+          console.log(tweet.user.screen_name);
+          console.log(tweet.text);
+          console.groupEnd('TWEET');
+        });
+        
+        // store tweets in new storage and in general timeline storage
+        // if popup exist pass new tweets to popup and clear new storage
+      });
+      
+      var params = {
+        consumerKey: fowl.storage.get('consumer_key'),
+        consumerSecret: fowl.storage.get('consumer_secret'),
+        accessTokenKey: fowl.storage.get('access_token_key'),
+        accessTokenSecret: fowl.storage.get('access_token_secret')
+      };
+      
+      T.init(params, function(){
+        var timeline = fowl.storage.get('timeline') || {};
+        fowl.timeline.home.init( timeline['home'] );
+        fowl.timeline.home.fetch();
+        setInterval(function(){
+          fowl.timeline.home.fetch();
+        }, 60 * 1000);
+      });
+    }
+    
+    init();
+  </script>
+  <!--
+  <script>
+    (function(){
+      if( !fowl.storage.get('access_token_key') ){
+        // show link to options page where user can authorize
+      }
+      else{
+        var params = {
+          consumerKey: fowl.storage.get('consumer_key'),
+          consumerSecret: fowl.storage.get('consumer_secret'),
+          accessTokenKey: fowl.storage.get('access_token_key'),
+          accessTokenSecret: fowl.storage.get('access_token_secret')
+        };
+        
+        T.init(params, function(){
+          setTimeout(function(){
+            fowl.init();
+          }, 0);
+        });
+      }
+    })();
+  </script>
+  -->
 </head>
 </html>

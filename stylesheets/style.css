@@ -183,7 +183,7 @@ nav ul {
 }
 
 .slide ul li div {
-	padding: 0 0 0 10px;
+	padding: 0 10px 0 10px;
 }
 
 .slide ul li:last-child {
@@ -199,7 +199,6 @@ nav ul {
 	float: right;
 	font: normal 11px/16px Arial,sans-serif;
 	position: relative;
-	margin: 0 0 0 0;
 	-webkit-font-smoothing: none;
 }
 

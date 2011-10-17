@@ -7,13 +7,15 @@
 <body style="width: 340px; height: 462px;">
   <div id="main">
     <header>
-      <h1 id="screen_name">khmelev</h1>
+      <h1 id="screen_name">screenname</h1>
 			<nav>
 				<ul id="top_menu">
-					<li class="selected"><span id="home_timeline_icon"></span></li>
+					<li data-type='home' class="selected"><span id="home_timeline_icon"></span></li>
+					<!--
 					<li><span id="mentions_timeline_icon"></span></li>
 					<li><span id="dm_timeline_icon"></span></li>
 					<li><span id="search_timeline_icon"></span></li>
+					-->
 				</ul>
 			</nav>
     </header>
@@ -107,32 +109,39 @@
           </li>
         </ul>
       </div>
+      
+      <div id="temp" class="slide" style="position: absolute; top: 0; left: 680px;">
+        <ul></ul>
+      </div>
     </div>
   </div>
   
   <script src="/javascripts/3dparty/js_humanized_time_span/humanized_time_span.js"></script>
 	<script src="/javascripts/3dparty/js-date-format/date-format.js"></script>
-
-  <script src="/javascripts/3dparty/jsOAuth-1.3.1/jsOAuth.min.js"></script>
-  <script src="/javascripts/twitter/init.js"></script>
-  <script src="/javascripts/twitter/timeline.js"></script>
-
+	
   <script src="/javascripts/fowl/storage.js"></script>
-  <script src="/javascripts/fowl/pubsub.js"></script>
-  <script src="/javascripts/fowl/timeline.js"></script>
-  <script src="/javascripts/fowl/init.js"></script>
   <script>
+    var background = chrome.extension.getBackgroundPage(),
+        credentials = background.getCredentials();
+    
+    if( !credentials.accessTokenKey ){
+      // redirect to auth page
+      return;
+    }
+    
     (function( window, document, undefined ){
-      var homeTimelineMenu, mentionsTimelineMenu,
-          homeTimelineList, mentionsTimelineList,
+      var homeTimelineMenu,
+          homeTimelineList,
           onSelectItem, onScrollHandler,
-          shadow, arrow, arrowShadow;
+          getCalcScrollTop, setScrollTop, scrollTimeout,
+          timeline, shadow, arrow, arrowShadow,
+          arrowValues;
       
-      homeTimelineMenu = document.querySelector('#home_timeline_icon').parentNode;
-      mentionsTimelineMenu = document.querySelector('#mentions_timeline_icon').parentNode;
-      
+      arrowValues = [ 85, 110, 135, 164 ];
+          
+      timeline = document.getElementById('timeline');
+      homeTimelineMenu = document.querySelector('#home_timeline_icon').parentNode;      
       homeTimelineList = document.getElementById('home');
-      mentionsTimelineList = document.getElementById('mentions');
       
       shadow = document.querySelector('.shadow');
       arrow = document.querySelector('.arrow');
@@ -140,10 +149,7 @@
       
       onSelectItem = function( event ){
         var target = event.target.parentNode,
-            selected = document.querySelector('.selected'),
-            timeline = document.getElementById('timeline');
-        
-        var arrowValues = [ 85, 110, 135, 164 ];
+            selected = document.querySelector('.selected');
         
         if( target == selected ){
           return;
@@ -151,19 +157,37 @@
         
         var listItems = Array.prototype.slice.call(target.parentNode.children, 0),
             targetIndex = listItems.indexOf( target ),
-            selectedIndex = listItems.indexOf( selected );
-        
-        var marginOffset = targetIndex * 340;
+            selectedIndex = listItems.indexOf( selected ),
+            marginOffset = targetIndex * 340;
         
         selected.classList.remove('selected');
         target.classList.add('selected');
         
         timeline.style.marginLeft = -marginOffset + 'px';
         arrow.style.left = arrowValues[ targetIndex ] + 'px';
+        
+        var id = target.querySelector('span').getAttribute('id').split('_')[0];
+        onScrollHandler( { target: document.getElementById( id ) } );
       };
       
       onScrollHandler = function( event ){
-        if( event.target.scrollTop > 0 ){
+        var meta = fowl.storage.get('meta') || {},
+            selectedTimelineType = document.querySelector('.selected').dataset.type;
+            metaTimelineData = meta[ selectedTimelineType ] || {},
+            scrollTop = event.target.scrollTop;
+        
+        metaTimelineData['scroll'] = scrollTop;
+        meta[ selectedTimelineType ] = metaTimelineData;
+        
+        if( scrollTimeout ){
+          clearTimeout( scrollTimeout );
+        }
+        
+        scrollTimeout = setTimeout(function(){
+          fowl.storage.set( 'meta', meta );
+        }, 1000);
+        
+        if( scrollTop > 0 ){
           shadow.style.display = 'block';
           arrowShadow.style.display = 'block';
         }
@@ -174,35 +198,34 @@
         }
       };
       
-      homeTimelineMenu.addEventListener( 'click', onSelectItem, false );
-      mentionsTimelineMenu.addEventListener( 'click', onSelectItem, false );
-      
-      homeTimelineList.addEventListener( 'scroll', onScrollHandler, false );
-      mentionsTimelineList.addEventListener( 'scroll', onScrollHandler, false );
-    })( window, window.document );
-  </script>
-  <!--
-  <script>
-    (function(){
-      if( !fowl.storage.get('access_token_key') ){
-        // show link to options page where user can authorize
-      }
-      else{
-        var params = {
-          consumerKey: fowl.storage.get('consumer_key'),
-          consumerSecret: fowl.storage.get('consumer_secret'),
-          accessTokenKey: fowl.storage.get('access_token_key'),
-          accessTokenSecret: fowl.storage.get('access_token_secret')
-        };
+      getCalcScrollTop = function( aTimelineType, aTweets ){
+        var meta = fowl.storage.get('meta') || {},
+            metaTimelineData = meta[ aTimelineType ] || {},
+            lastScrollTimelineVal = metaTimelineData['scroll'] || 0;
         
-        T.init(params, function(){
-          setTimeout(function(){
-            fowl.init();
-          }, 0);
-        });
-      }
-    })();
+        return lastScrollTimelineVal;
+      };
+      
+      setScrollTop = function( aTimelineType ){
+        var lastScrollTimelineVal = getCalcScrollTop( aTimelineType );
+        document.getElementById( aTimelineType ).scrollTop = lastScrollTimelineVal;
+      };
+      
+      homeTimelineMenu.addEventListener( 'click', onSelectItem, false );      
+      homeTimelineList.addEventListener( 'scroll', onScrollHandler, false );
+      
+      setScrollTop( 'home' );
+    })( window, window.document );
+    
+    var homeTimelineList = document.querySelector('#home ul'),
+        tempTimelineList = document.querySelector('#temp ul'),
+        lastScrollTopVal = 100,
+        tpl = '<li><div>';
+        tpl += '<span class="nickname">stepanvr</span>';
+        tpl += '<time datetime="{$datetime}">1 day ago</time>';
+        tpl += '<p>Ура! Друзья на НГ приедут! Сначала одни, потом еще, третьи думают. Хорошо, что мы в Австралию не уехали - хрен бы кто приехал в гости :)</p>';
+        tpl += '</div></li>';
+    
   </script>
-  -->
 </body>
 </html>

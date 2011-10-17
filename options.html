@@ -5,14 +5,15 @@
   <title>fowl — options page</title>
 </head>
 <body>
-  <script src="/javascripts/fowl/storage.js"></script>
-  
   <script src="/javascripts/3dparty/jsOAuth-1.3.1/jsOAuth.min.js"></script>
   <script src="/javascripts/twitter/init.js"></script>
   
   <script>
-    (function(){      
-      if( !fowl.storage.get('access_token_key') ){
+    (function(){
+      var background = chrome.extension.getBackgroundPage(),
+          credentials = background.getCredentials();
+      
+      if( !credentials.accessTokenKey ){
         var params = {
           consumerKey: 'JKlz1sCj7Ad30giHvwztlw',
           consumerSecret: '2qjuHPYGR7CcSDtH2Fcaesv5aEdxETNPOfGs0uHhc',
@@ -20,11 +21,10 @@
         };
 
         T.authorize(params, function( accessTokenKey, accessTokenSecret ){
-          fowl.storage.set( 'consumer_key', params.consumerKey );
-          fowl.storage.set( 'consumer_secret', params.consumerSecret );
-        
-          fowl.storage.set( 'access_token_key', accessTokenKey );
-          fowl.storage.set( 'access_token_secret', accessTokenSecret );
+          background.storeCredentials( accessTokenKey, accessTokenSecret, params.consumerKey, params.consumerSecret );
+          setTimeout(function(){
+            background.init();
+          }, 0);
         });
       }
     })();
