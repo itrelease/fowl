@@ -274,14 +274,15 @@
     var homeTimeline = fowl.storage.get('home_timeline'),
         homeTimelineNew = fowl.storage.get('home_timeline_new');
     
-    if( homeTimelineNew && homeTimelineNew.length ){
-      updateTimelineWithType( 'home', homeTimelineNew );
-      homeTimelineNew = [];
-      fowl.storage.set('home_timeline_new', homeTimelineNew);
-    }
-    else if( homeTimeline && homeTimeline.length ){
-      updateTimelineWithType( 'home', homeTimeline, true );
-    }
+    updateTimelineWithType( 'home', homeTimeline, true );
+    // if( homeTimelineNew && homeTimelineNew.length ){
+    //   updateTimelineWithType( 'home', homeTimelineNew );
+    //   homeTimelineNew = [];
+    //   fowl.storage.set('home_timeline_new', homeTimelineNew);
+    // }
+    // else if( homeTimeline && homeTimeline.length ){
+    //   updateTimelineWithType( 'home', homeTimeline, true );
+    // }
   </script>
 </body>
 </html>

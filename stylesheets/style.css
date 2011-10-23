@@ -19,6 +19,14 @@ time, mark, audio, video {
   background:transparent;
 }
 
+a {
+  color: #4ed3ff;
+}
+
+a:hover {
+  text-decoration: none;
+}
+
 body, html {
   width: 340px;
   height: 462px;
