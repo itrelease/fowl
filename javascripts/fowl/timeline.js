@@ -17,7 +17,7 @@ fowl.timeline = (function(){
     this.tweets = opt_tweets || this.tweets;
     this.sinceId = this.tweets[0] ? this.tweets[0] : this.sinceId;
     if( opt_tweets ){
-      fowl.pubsub.publish( EventType.HOME, true, this.tweets );
+      fowl.pubsub.publish( EventType.HOME, true, this.tweets, true );
     }
   };
   
@@ -38,14 +38,14 @@ fowl.timeline = (function(){
       this.sinceId = this.tweets[0] ? this.tweets[0]['id_str'] : this.sinceId;
       
       if( this.type ){
-        var localTimeline = fowl.storage.get( 'timeline' ) || {},
-            localSinceId = fowl.storage.get( 'since_id' ) || {};
+        var localTimeline = fowl.storage.get( this.type + '_timeline' ) || [],
+            localSinceId = fowl.storage.get( this.type_ + '_since_id' );
       
-        localTimeline[ this.type ] = this.tweets.slice(0, 500);
-        localSinceId[ this.type ] = this.sinceId;
+        localTimeline = this.tweets.slice(0, 500);
+        localSinceId = this.sinceId;
       
-        fowl.storage.set( 'timeline', localTimeline );
-        fowl.storage.set( 'since_id', localSinceId );
+        fowl.storage.set( this.type + '_timeline', localTimeline );
+        fowl.storage.set( this.type + '_since_id', localSinceId );
       }
     }
   };
@@ -62,11 +62,11 @@ fowl.timeline = (function(){
   HomeTimeline.prototype = Object.create( Timeline.prototype );
   
   HomeTimeline.prototype.fetch = function(){
-    var sinceId = fowl.storage.get('since_id') || {};
+    var sinceId = fowl.storage.get('home_since_id') || 0;
     
     T.timeline.home({
       count: 200,
-      since_id: sinceId['home'],
+      since_id: sinceId,
       include_entities: true
     }, this.onUpdateHandler.bind( this ));
   };

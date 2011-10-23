@@ -2,31 +2,24 @@ fowl = window.fowl || {};
 
 fowl.storage = (function(){
   function get( key ){
-    var storage = JSON.parse( localStorage.getItem('fowl') ) || {};
-    return storage[key];
+    return JSON.parse( localStorage.getItem( key ) );
   }
   
   function set( key, value ){
-    var storage = JSON.parse( localStorage.getItem('fowl') ) || {};
     if( typeof key == 'object' ){
       for( var prop in key ){
         if( key.hasOwnProperty( prop ) ){
-          storage[ prop ] = key[ prop ];
+          localStorage.setItem( prop, JSON.stringify( key[ prop ] ) );
         }
       }
     }
     else{
-      storage[ key ] = value;
+      localStorage.setItem(key, JSON.stringify( value ) );
     }
-    
-    localStorage.setItem('fowl', JSON.stringify( storage ) );
   }
   
   function remove( key ){
-    var storage = JSON.parse( localStorage.getItem('fowl') ) || {};
-    storage[key] = null;
-    delete storage[key];
-    localStorage.setItem('fowl', JSON.stringify( storage ) );
+    localStorage.removeItem( key );
   }
   
   return {

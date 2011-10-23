@@ -29,36 +29,49 @@
     }
     
     function init(){
-      console.log('init');
-      if( !fowl.storage.get('access_token_key') ){
-        console.log('wtf');
+      var credentials = getCredentials();
+      if( !credentials.accessTokenKey ){
         return;
       }
       
-      fowl.pubsub.subscribe(fowl.timeline.EventType.HOME, function( status, tweets ){
-        var popup = chrome.extension.getViews({ type: 'popup' });
-        console.info('NEW');
+      fowl.pubsub.subscribe(fowl.timeline.EventType.HOME, function( status, tweets, firstChunk ){
+        var popup = chrome.extension.getViews({ type: 'popup' })[0],
+            homeTimeline = fowl.storage.get('home_timeline'),
+            homeTimelineNew = fowl.storage.get('home_timeline_new');
+        
+        if( !homeTimelineNew ){
+          homeTimelineNew = [];
+        }
+        
+        if( !firstChunk ){
+          homeTimelineNew = tweets.concat( homeTimelineNew );
+          fowl.storage.set('home_timeline_new', homeTimelineNew);
+        }
+        
+        if( popup ){
+          popup.updateTimelineWithType( 'home', homeTimelineNew );
+          homeTimelineNew = [];
+          fowl.storage.set('home_timeline_new', homeTimelineNew);
+        }
+        
         tweets.forEach(function( tweet ){
           console.group('TWEET');
           console.log(tweet.user.screen_name);
           console.log(tweet.text);
           console.groupEnd('TWEET');
         });
-        
-        // store tweets in new storage and in general timeline storage
-        // if popup exist pass new tweets to popup and clear new storage
       });
       
       var params = {
-        consumerKey: fowl.storage.get('consumer_key'),
-        consumerSecret: fowl.storage.get('consumer_secret'),
-        accessTokenKey: fowl.storage.get('access_token_key'),
-        accessTokenSecret: fowl.storage.get('access_token_secret')
+        consumerKey: credentials.consumerKey,
+        consumerSecret: credentials.consumerSecret,
+        accessTokenKey: credentials.accessTokenKey,
+        accessTokenSecret: credentials.accessTokenSecret
       };
       
       T.init(params, function(){
-        var timeline = fowl.storage.get('timeline') || {};
-        fowl.timeline.home.init( timeline['home'] );
+        var timeline = fowl.storage.get('home_timeline') || [];
+        fowl.timeline.home.init( timeline );
         fowl.timeline.home.fetch();
         setInterval(function(){
           fowl.timeline.home.fetch();

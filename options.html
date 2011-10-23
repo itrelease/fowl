@@ -22,9 +22,7 @@
 
         T.authorize(params, function( accessTokenKey, accessTokenSecret ){
           background.storeCredentials( accessTokenKey, accessTokenSecret, params.consumerKey, params.consumerSecret );
-          setTimeout(function(){
-            background.init();
-          }, 0);
+          background.init();
         });
       }
     })();

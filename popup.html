@@ -3,6 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <link rel="stylesheet" href="/stylesheets/style.css">
+  <script src="/javascripts/fowl/init.js"></script>
+  <script src="/javascripts/3dparty/js_humanized_time_span/humanized_time_span.js"></script>
 </head>
 <body style="width: 340px; height: 462px;">
   <div id="main">
@@ -12,7 +14,7 @@
 				<ul id="top_menu">
 					<li data-type='home' class="selected"><span id="home_timeline_icon"></span></li>
 					<!--
-					<li><span id="mentions_timeline_icon"></span></li>
+          <li><span id="mentions_timeline_icon"></span></li>
 					<li><span id="dm_timeline_icon"></span></li>
 					<li><span id="search_timeline_icon"></span></li>
 					-->
@@ -29,7 +31,7 @@
     <div id="timeline">
       <div id="home" class="slide">
         <ul>
-          <li>
+          <!-- <li>
             <div>
               <span class="nickname">DmitrySoshnikov</span>
               <time datetime="{$datetime}">26 minutes ago</time>
@@ -80,7 +82,7 @@
               <time datetime="{$datetime}">10 hours ago</time>
               <p>Обновил iPad до iOS 5 — попали все приложения. Я лох?</p>
             </div>
-          </li>
+          </li> -->
         </ul>
       </div>
       
@@ -129,103 +131,157 @@
       return;
     }
     
-    (function( window, document, undefined ){
-      var homeTimelineMenu,
-          homeTimelineList,
-          onSelectItem, onScrollHandler,
-          getCalcScrollTop, setScrollTop, scrollTimeout,
-          timeline, shadow, arrow, arrowShadow,
-          arrowValues;
-      
-      arrowValues = [ 85, 110, 135, 164 ];
-          
-      timeline = document.getElementById('timeline');
-      homeTimelineMenu = document.querySelector('#home_timeline_icon').parentNode;      
-      homeTimelineList = document.getElementById('home');
-      
-      shadow = document.querySelector('.shadow');
-      arrow = document.querySelector('.arrow');
-      arrowShadow = document.querySelector('.arrow_shadow');
-      
-      onSelectItem = function( event ){
-        var target = event.target.parentNode,
-            selected = document.querySelector('.selected');
-        
-        if( target == selected ){
-          return;
-        }
-        
-        var listItems = Array.prototype.slice.call(target.parentNode.children, 0),
-            targetIndex = listItems.indexOf( target ),
-            selectedIndex = listItems.indexOf( selected ),
-            marginOffset = targetIndex * 340;
-        
-        selected.classList.remove('selected');
-        target.classList.add('selected');
-        
-        timeline.style.marginLeft = -marginOffset + 'px';
-        arrow.style.left = arrowValues[ targetIndex ] + 'px';
-        
-        var id = target.querySelector('span').getAttribute('id').split('_')[0];
-        onScrollHandler( { target: document.getElementById( id ) } );
-      };
-      
-      onScrollHandler = function( event ){
-        var meta = fowl.storage.get('meta') || {},
-            selectedTimelineType = document.querySelector('.selected').dataset.type;
-            metaTimelineData = meta[ selectedTimelineType ] || {},
-            scrollTop = event.target.scrollTop;
-        
-        metaTimelineData['scroll'] = scrollTop;
-        meta[ selectedTimelineType ] = metaTimelineData;
-        
-        if( scrollTimeout ){
-          clearTimeout( scrollTimeout );
-        }
-        
-        scrollTimeout = setTimeout(function(){
-          fowl.storage.set( 'meta', meta );
-        }, 1000);
-        
-        if( scrollTop > 0 ){
-          shadow.style.display = 'block';
-          arrowShadow.style.display = 'block';
-        }
-        
-        else{
-          shadow.style.display = 'none';
-          arrowShadow.style.display = 'none';
-        }
-      };
-      
-      getCalcScrollTop = function( aTimelineType, aTweets ){
-        var meta = fowl.storage.get('meta') || {},
-            metaTimelineData = meta[ aTimelineType ] || {},
-            lastScrollTimelineVal = metaTimelineData['scroll'] || 0;
-        
-        return lastScrollTimelineVal;
-      };
-      
-      setScrollTop = function( aTimelineType ){
-        var lastScrollTimelineVal = getCalcScrollTop( aTimelineType );
-        document.getElementById( aTimelineType ).scrollTop = lastScrollTimelineVal;
-      };
-      
-      homeTimelineMenu.addEventListener( 'click', onSelectItem, false );      
-      homeTimelineList.addEventListener( 'scroll', onScrollHandler, false );
-      
-      setScrollTop( 'home' );
-    })( window, window.document );
+    var homeTimelineMenu,
+        homeTimelineList,
+        onSelectItem, onScrollHandler,
+        getScrollTopWithListItems, setScrollTop, scrollTimeout,
+        timeline, shadow, arrow, arrowShadow,
+        arrowValues;
     
-    var homeTimelineList = document.querySelector('#home ul'),
-        tempTimelineList = document.querySelector('#temp ul'),
-        lastScrollTopVal = 100,
-        tpl = '<li><div>';
-        tpl += '<span class="nickname">stepanvr</span>';
-        tpl += '<time datetime="{$datetime}">1 day ago</time>';
-        tpl += '<p>Ура! Друзья на НГ приедут! Сначала одни, потом еще, третьи думают. Хорошо, что мы в Австралию не уехали - хрен бы кто приехал в гости :)</p>';
-        tpl += '</div></li>';
+    arrowValues = [ 107 ];
+        
+    timeline = document.getElementById('timeline');
+    homeTimelineMenu = document.querySelector('#home_timeline_icon').parentNode;      
+    homeTimelineList = document.getElementById('home');
     
+    shadow = document.querySelector('.shadow');
+    arrow = document.querySelector('.arrow');
+    arrowShadow = document.querySelector('.arrow_shadow');
+    
+    onSelectItem = function( event ){
+      var target = event.target.parentNode,
+          selected = document.querySelector('.selected');
+      
+      if( target == selected ){
+        return;
+      }
+      
+      var listItems = Array.prototype.slice.call(target.parentNode.children, 0),
+          targetIndex = listItems.indexOf( target ),
+          selectedIndex = listItems.indexOf( selected ),
+          marginOffset = targetIndex * 340;
+      
+      selected.classList.remove('selected');
+      target.classList.add('selected');
+      
+      timeline.style.marginLeft = -marginOffset + 'px';
+      arrow.style.left = arrowValues[ targetIndex ] + 'px';
+      
+      var id = target.querySelector('span').getAttribute('id').split('_')[0];
+      onScrollHandler( { target: document.getElementById( id ) } );
+    };
+    
+    onScrollHandler = function( event ){
+      var meta = fowl.storage.get('meta') || {},
+          selectedTimelineType = document.querySelector('.selected').dataset.type;
+          metaTimelineData = meta[ selectedTimelineType ] || {},
+          scrollTop = event.target.scrollTop;
+      
+      metaTimelineData['scroll'] = scrollTop;
+      meta[ selectedTimelineType ] = metaTimelineData;
+      
+      if( scrollTimeout ){
+        clearTimeout( scrollTimeout );
+      }
+      
+      scrollTimeout = setTimeout(function(){
+        fowl.storage.set( 'meta', meta );
+      }, 1500);
+      
+      if( scrollTop > 0 ){
+        shadow.style.display = 'block';
+        arrowShadow.style.display = 'block';
+      }
+      
+      else{
+        shadow.style.display = 'none';
+        arrowShadow.style.display = 'none';
+      }
+    };
+    
+    getScrollTopWithListItems = function( aTimelineType, aTweets, withLastScrollTop ){
+      var meta = fowl.storage.get('meta') || {},
+          metaTimelineData = meta[ aTimelineType ] || {},
+          lastScrollTimelineVal = metaTimelineData['scroll'] || 0;
+      
+      var tempTimeline = document.querySelector('#temp ul'),
+          documentFragment = document.createDocumentFragment();
+      
+      tempTimeline.innerHTML = '';
+      
+      aTweets.forEach(function( tweet ){
+        var li = document.createElement('li'),
+            div = '<div><span class="nickname">{$screenName}</span><time datetime="{$datetime}">{$time}</time><p>{$text}</p></div>',
+            data = {};
+        
+        data.screenName = tweet.user.screen_name;
+        data.text = fowl.parse(tweet.text);
+        data.time = humanized_time_span( new Date(tweet.created_at) );
+        
+        li.innerHTML = fowl.getMsg( div, data );
+        documentFragment.appendChild( li );
+      });
+      
+      tempTimeline.appendChild( documentFragment );
+      // console.log(lastScrollTimelineVal, tempTimeline.offsetHeight);
+      var scrollTop = lastScrollTimelineVal,
+          listItems = document.querySelectorAll('#temp li');
+      
+      if( !withLastScrollTop ){
+        scrollTop += tempTimeline.offsetHeight;
+      }
+      
+      metaTimelineData['scroll'] = scrollTop;
+      meta[ aTimelineType ] = metaTimelineData;
+      fowl.storage.set('meta', meta);
+      
+      tempTimeline.innerHTML = '';
+      
+      return {
+        scrollTop: scrollTop,
+        listItems: Array.prototype.slice.call( listItems, 0 )
+      };
+    };
+    
+    setScrollTop = function( aTimelineType ){
+      var lastScrollTimelineVal = getCalcScrollTop( aTimelineType );
+      document.getElementById( aTimelineType ).scrollTop = lastScrollTimelineVal;
+    };
+    
+    homeTimelineMenu.addEventListener( 'click', onSelectItem, false );      
+    homeTimelineList.addEventListener( 'scroll', onScrollHandler, false );
+    
+    // setScrollTop( 'home' );
+    var updateTimelineWithType = function( aTimelineType, aTweets, withLastScrollTop ){
+      var timeline = document.querySelector('#' + aTimelineType + ' ul'),
+          data = getScrollTopWithListItems( aTimelineType, aTweets, withLastScrollTop );
+      
+      var listItems = timeline.querySelectorAll('li');
+      
+      listItems = Array.prototype.slice.call( listItems, 0 );
+      listItems = data.listItems.concat( listItems );
+      
+      var documentFragment = document.createDocumentFragment();
+      for( var i=0, l=listItems.length; i<l; i++ ){
+        documentFragment.appendChild( listItems[i] );
+      }
+      
+      timeline.appendChild( documentFragment );
+      timeline.parentNode.scrollTop = data.scrollTop;
+    };
+    
+    
+    var homeTimeline = fowl.storage.get('home_timeline'),
+        homeTimelineNew = fowl.storage.get('home_timeline_new');
+    
+    if( homeTimelineNew && homeTimelineNew.length ){
+      updateTimelineWithType( 'home', homeTimelineNew );
+      homeTimelineNew = [];
+      fowl.storage.set('home_timeline_new', homeTimelineNew);
+    }
+    else if( homeTimeline && homeTimeline.length ){
+      updateTimelineWithType( 'home', homeTimeline, true );
+    }
   </script>
 </body>
 </html>
