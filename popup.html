@@ -251,7 +251,6 @@
     homeTimelineMenu.addEventListener( 'click', onSelectItem, false );      
     homeTimelineList.addEventListener( 'scroll', onScrollHandler, false );
     
-    // setScrollTop( 'home' );
     var updateTimelineWithType = function( aTimelineType, aTweets, withLastScrollTop ){
       var timeline = document.querySelector('#' + aTimelineType + ' ul'),
           data = getScrollTopWithListItems( aTimelineType, aTweets, withLastScrollTop );
@@ -274,15 +273,15 @@
     var homeTimeline = fowl.storage.get('home_timeline'),
         homeTimelineNew = fowl.storage.get('home_timeline_new');
     
-    updateTimelineWithType( 'home', homeTimeline, true );
-    // if( homeTimelineNew && homeTimelineNew.length ){
-    //   updateTimelineWithType( 'home', homeTimelineNew );
-    //   homeTimelineNew = [];
-    //   fowl.storage.set('home_timeline_new', homeTimelineNew);
-    // }
-    // else if( homeTimeline && homeTimeline.length ){
-    //   updateTimelineWithType( 'home', homeTimeline, true );
-    // }
+    if( homeTimeline && homeTimeline.length ){
+      updateTimelineWithType( 'home', homeTimeline, true );
+    }
+    
+    if( homeTimelineNew && homeTimelineNew.length ){
+      updateTimelineWithType( 'home', homeTimelineNew );
+      homeTimelineNew = [];
+      fowl.storage.set('home_timeline_new', homeTimelineNew);
+    }
   </script>
 </body>
 </html>
