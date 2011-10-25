@@ -30,63 +30,14 @@
     
     <div id="timeline">
       <div id="home" class="slide">
-        <ul>
-          <!-- <li>
-            <div>
-              <span class="nickname">DmitrySoshnikov</span>
-              <time datetime="{$datetime}">26 minutes ago</time>
-              <p>Constantly forgot to put semicolon garbage at the end of a statement while playing with #Dart.</p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <span class="nickname">alxgsv</span>
-              <time datetime="{$datetime}">33 minutes ago</time>
-              <p>@knopkodav @bzhmurov а учитывая, что каждую дверь надо открывать/закрывать отдельно, Борис на сегодня получает прозвище Водяной!</p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <span class="nickname">stepanvr</span>
-              <time datetime="{$datetime}">56 minutes ago</time>
-              <p>Ура! Друзья на НГ приедут! Сначала одни, потом еще, третьи думают. Хорошо, что мы в Австралию не уехали - хрен бы кто приехал в гости :)</p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <span class="nickname">genue</span>
-              <time datetime="{$datetime}">1 hour ago</time>
-              <p>Обычно Фадея не цитирую, но отныне он представляется только так: 
-              — Я черветряпа
-              — Кто? Черепаха?
-              — Чер-ве-тря-па. Червяк-тряпка.</p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <span class="nickname">alxgsv</span>
-              <time datetime="{$datetime}">1 hour ago</time>
-              <p>Входит — и не выходит! Замечательно не выходит! (PayPal для русских)</p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <span class="nickname">kost</span>
-              <time datetime="{$datetime}">9 hours ago</time>
-              <p>Все приложения можно восстановить из App Store. Настройки сохранились. А часть можно и выкинуть.</p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <span class="nickname">kost</span>
-              <time datetime="{$datetime}">10 hours ago</time>
-              <p>Обновил iPad до iOS 5 — попали все приложения. Я лох?</p>
-            </div>
-          </li> -->
-        </ul>
+        <ul></ul>
       </div>
       
       <div id="mentions" class="slide" style="position: absolute; top: 0; left: 340px;">
+        <ul></ul>
+      </div>
+      
+      <div id="temp" class="slide" style="position: absolute; top: 0; left: 680px;">
         <ul>
           <li>
             <div>
@@ -95,25 +46,7 @@
               <p>Россия мокренькая</p>
             </div>
           </li>
-          <li>
-            <div>
-              <span class="nickname">alxgsv</span>
-              <time datetime="{$datetime}">1 day ago</time>
-              <p>Россия мокренькая</p>
-            </div>
-          </li>
-          <li>
-            <div>
-              <span class="nickname">stepanvr</span>
-              <time datetime="{$datetime}">1 day ago</time>
-              <p>Ура! Друзья на НГ приедут! Сначала одни, потом еще, третьи думают. Хорошо, что мы в Австралию не уехали - хрен бы кто приехал в гости :)</p>
-            </div>
-          </li>
         </ul>
-      </div>
-      
-      <div id="temp" class="slide" style="position: absolute; top: 0; left: 680px;">
-        <ul></ul>
       </div>
     </div>
   </div>
@@ -127,7 +60,6 @@
         credentials = background.getCredentials();
     
     if( !credentials.accessTokenKey ){
-      // redirect to auth page
       return;
     }
     
@@ -173,7 +105,7 @@
     
     onScrollHandler = function( event ){
       var meta = fowl.storage.get('meta') || {},
-          selectedTimelineType = document.querySelector('.selected').dataset.type;
+          selectedTimelineType = document.querySelector('.selected').dataset.type,
           metaTimelineData = meta[ selectedTimelineType ] || {},
           scrollTop = event.target.scrollTop;
       
@@ -223,7 +155,7 @@
       });
       
       tempTimeline.appendChild( documentFragment );
-      // console.log(lastScrollTimelineVal, tempTimeline.offsetHeight);
+      
       var scrollTop = lastScrollTimelineVal,
           listItems = document.querySelectorAll('#temp li');
       
@@ -274,6 +206,16 @@
         homeTimelineNew = fowl.storage.get('home_timeline_new');
     
     if( homeTimeline && homeTimeline.length ){
+      if( homeTimelineNew && homeTimelineNew.length ){
+        for( var i=0, il=homeTimelineNew.length; i<il; i++ ){
+          for( var j=0, jl=homeTimeline.length; j<jl; j++ ){
+            if( homeTimelineNew[i]['id_str'] == homeTimeline[j]['id_str'] ){
+              homeTimeline.splice(j, 1);
+              break;
+            }
+          }
+        }
+      }
       updateTimelineWithType( 'home', homeTimeline, true );
     }
     
