@@ -6,9 +6,10 @@
   "browser_action": {
     "default_popup": "popup.html"
   },
-  "options_page": "options.html",
+  // "options_page": "options.html",
   "permissions": [
     "https://api.twitter.com/",
+    "http://api.twitter.com/",
     "unlimitedStorage",
     "tabs"
   ]

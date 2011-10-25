@@ -65,7 +65,7 @@ T.authorize = function( params, callback ){
       oauth;
   
   if( !queryString || queryString.indexOf('oauth_token') == -1 ){
-    console.log('1', params.consumerKey, params.consumerSecret, params.callbackUrl);
+    // console.log('1', params.consumerKey, params.consumerSecret, params.callbackUrl);
     oauth = new OAuth({
       consumerKey: params.consumerKey,
       consumerSecret: params.consumerSecret,
@@ -84,7 +84,7 @@ T.authorize = function( params, callback ){
   }
   
   else{
-    console.log('2');
+    // console.log('2');
     var queryObject = {},
         pairs;
     
@@ -105,9 +105,21 @@ T.authorize = function( params, callback ){
     });
     
     oauth.fetchAccessToken(
-      function(){
+      function( response ){
+        var data = response.text.split('&'),
+            screenName, userId;
+        
+        for( var i=0, l=data.length; i<l; i++ ){
+          if( data[i].indexOf( 'screen_name' ) != -1 ){
+            screenName = data[i].split('=')[1];
+          }
+          if( data[i].indexOf( 'user_id' ) != -1 ){
+            userId = data[i].split('=')[1];
+          }
+        }
+        
         var accessToken = oauth.getAccessToken();
-        callback( accessToken[0], accessToken[1] );
+        callback( accessToken[0], accessToken[1], screenName, userId );
       },
       function( response ){
         console.warn(response);

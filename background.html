@@ -10,8 +10,10 @@
   <script src="/javascripts/fowl/init.js"></script>
   
   <script>
-    function storeCredentials( accessTokenKey, accessTokenSecret, consumerKey, consumerSecret ){
+    function storeCredentials( aScreenName, aUserId, accessTokenKey, accessTokenSecret, consumerKey, consumerSecret ){
       fowl.storage.set({
+        'screen_name': aScreenName,
+        'user_id': aUserId,
         'access_token_key': accessTokenKey,
         'access_token_secret': accessTokenSecret,
         'consumer_key': consumerKey,
@@ -27,6 +29,13 @@
       credentials.consumerSecret = fowl.storage.get('consumer_secret');
       return credentials;
     }
+    
+    function getUserInfo(){
+      var userInfo = {};
+      userInfo.screenName = fowl.storage.get('screen_name');
+      userInfo.userId = fowl.storage.get('user_id');
+      return userInfo;
+    };
     
     function init(){
       var credentials = getCredentials();
@@ -49,17 +58,17 @@
         }
         
         if( popup ){
-          popup.updateTimelineWithType( 'home', homeTimelineNew );
+          popup.updateTimelineWithType( 'home', homeTimelineNew, true );
           homeTimelineNew = [];
           fowl.storage.set('home_timeline_new', homeTimelineNew);
         }
         
-        tweets.forEach(function( tweet ){
-          console.group('TWEET');
-          console.log(tweet.user.screen_name);
-          console.log(tweet.text);
-          console.groupEnd('TWEET');
-        });
+        // tweets.forEach(function( tweet ){
+        //   console.group('TWEET');
+        //   console.log(tweet.user.screen_name);
+        //   console.log(tweet.text);
+        //   console.groupEnd('TWEET');
+        // });
       });
       
       var params = {

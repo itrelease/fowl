@@ -17,11 +17,12 @@
         var params = {
           consumerKey: 'JKlz1sCj7Ad30giHvwztlw',
           consumerSecret: '2qjuHPYGR7CcSDtH2Fcaesv5aEdxETNPOfGs0uHhc',
-          callbackUrl: chrome.extension.getURL('options.html')
+          callbackUrl: chrome.extension.getURL('auth.html')
         };
 
-        T.authorize(params, function( accessTokenKey, accessTokenSecret ){
-          background.storeCredentials( accessTokenKey, accessTokenSecret, params.consumerKey, params.consumerSecret );
+        T.authorize(params, function( accessTokenKey, accessTokenSecret, aScreenName, aUserId ){
+          // chrome-extension://kbjjlppgpejpghnaafndapdccbefjela/
+          background.storeCredentials( aScreenName, aUserId, accessTokenKey, accessTokenSecret, params.consumerKey, params.consumerSecret );
           background.init();
         });
       }

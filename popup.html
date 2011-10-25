@@ -118,7 +118,7 @@
       
       scrollTimeout = setTimeout(function(){
         fowl.storage.set( 'meta', meta );
-      }, 1500);
+      }, 500);
       
       if( scrollTop > 0 ){
         shadow.style.display = 'block';
@@ -131,7 +131,7 @@
       }
     };
     
-    getScrollTopWithListItems = function( aTimelineType, aTweets, withLastScrollTop ){
+    getScrollTopWithListItems = function( aTimelineType, aTweets, calcScrollTop ){
       var meta = fowl.storage.get('meta') || {},
           metaTimelineData = meta[ aTimelineType ] || {},
           lastScrollTimelineVal = metaTimelineData['scroll'] || 0;
@@ -159,7 +159,7 @@
       var scrollTop = lastScrollTimelineVal,
           listItems = document.querySelectorAll('#temp li');
       
-      if( !withLastScrollTop ){
+      if( calcScrollTop ){
         scrollTop += tempTimeline.offsetHeight;
       }
       
@@ -183,9 +183,12 @@
     homeTimelineMenu.addEventListener( 'click', onSelectItem, false );      
     homeTimelineList.addEventListener( 'scroll', onScrollHandler, false );
     
-    var updateTimelineWithType = function( aTimelineType, aTweets, withLastScrollTop ){
+    var updateTimelineWithType = function( aTimelineType, aTweets, calcScrollTop ){
       var timeline = document.querySelector('#' + aTimelineType + ' ul'),
-          data = getScrollTopWithListItems( aTimelineType, aTweets, withLastScrollTop );
+          data = getScrollTopWithListItems( aTimelineType, aTweets, calcScrollTop ),
+          account = background.getUserInfo();
+      
+      document.getElementById('screen_name').innerHTML = account.screenName;
       
       var listItems = timeline.querySelectorAll('li');
       
@@ -216,11 +219,11 @@
           }
         }
       }
-      updateTimelineWithType( 'home', homeTimeline, true );
+      updateTimelineWithType( 'home', homeTimeline );
     }
     
     if( homeTimelineNew && homeTimelineNew.length ){
-      updateTimelineWithType( 'home', homeTimelineNew );
+      updateTimelineWithType( 'home', homeTimelineNew, homeTimeline.length );
       homeTimelineNew = [];
       fowl.storage.set('home_timeline_new', homeTimelineNew);
     }
