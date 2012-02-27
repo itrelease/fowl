@@ -1,1 +1,1 @@
-![Look](http://github.com/itrelease/fowl/blob/master/images/fowl.png)
+![Look](http://github.com/itrelease/fowl/raw/master/images/fowl.png)
