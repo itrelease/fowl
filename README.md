@@ -1,1 +1,1 @@
-![Look](./images/fowl.png)
+![Look](http://github.com/itrelease/fowl/blob/master/images/fowl.png)
